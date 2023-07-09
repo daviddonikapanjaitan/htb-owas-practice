@@ -1,0 +1,15 @@
+access: 142.93.47.151:32298
+inspect element take attention:
+window.CONFIG = window.CONFIG || {
+    buildNumber: "v20190816",
+    debug: false,
+    modelName: "Valencia",
+    correctPin: "4844",
+}
+
+pin: 4844
+type in 4844 then enter.
+inspect element response:
+HTB{vi3w_cli13nt_s0urc3_S3cr3ts!}
+
+resource: https://medium.com/@joemcfarland/hack-the-box-cyber-apocalypse-trapped-source-771514b79dbf
