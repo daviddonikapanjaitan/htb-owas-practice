@@ -1,0 +1,11 @@
+access: 144.126.206.249:32197
+
+please register me, will show laravel debug mode.
+
+choose application frame.
+take attention flag:
+search htb
+
+result:
+APP_KEY	
+"HTB{wh3n_th3_d3bugg3r_turns_4g41nst_th3_d3bugg33}"

