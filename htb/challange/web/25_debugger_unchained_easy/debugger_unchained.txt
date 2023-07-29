@@ -1,0 +1,5 @@
+please see exploit.py code and execute it.
+
+resource:
+https://www.orangewhispers.com/posts/debugger-unchained/
+https://github.com/sentrium-security/CTF-Write-Ups/blob/main/debugger_unchained.md
